@@ -1,0 +1,15 @@
+{
+  "$jsonSchema":{
+    "bsonType": "object",
+    "properties":{
+      "login_date": {
+        "bsonType": "string",
+        "description": "This date latest user login"
+      },
+      "logout_date": {
+        "bsonType": "string",
+        "description": "This date latest user logout"
+      }
+    }
+  }
+}

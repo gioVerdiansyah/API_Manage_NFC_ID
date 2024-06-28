@@ -1,0 +1,20 @@
+{
+  "$jsonSchema":{
+    "bsonType": "object",
+    "required": ["name"],
+    "properties":{
+      "id": {
+        "bsonType": "string",
+        "description": "NFC ID Machine"
+      },
+      "name": {
+        "bsonType": "string",
+        "description": "Name 3D machine"
+      },
+      "isUsed": {
+        "bsonType": "bool",
+        "description": "Is the machine used another device?"
+      }
+    }
+  }
+}
