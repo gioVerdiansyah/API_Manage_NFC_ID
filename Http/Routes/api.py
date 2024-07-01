@@ -1,7 +1,10 @@
 from Core.FlaskAPI import app, Api
 
-from Http.Controllers import AuthController
-from Http.Controllers import NfcController
+from Http.Controllers.Admin.Auth.LoginController import Login
+from Http.Controllers.Admin.Auth.LogoutController import Logout
+from Http.Controllers.Admin.NfcController import NfcController
+from Http.Controllers.Unity.NfcScanController import NfcScanController
+from Http.Controllers.Unity.NfcLogoutController import NfcLogoutController
 
 # Middleware prefix names
 lk = 'lock'
@@ -11,10 +14,12 @@ laa = "lock_admin_auth"
 def __init_api__():
     # Admin
     admin_api = Api(app, prefix="/api/admin")
-    admin_api.add_resource(AuthController.Login, '/login', endpoint=f'{lk}.login')
+    admin_api.add_resource(Login, '/login', endpoint=f'{lk}.login')
     # Admin Auth
-    admin_api.add_resource(AuthController.Logout, '/logout', endpoint=f'{laa}.logout')
-    admin_api.add_resource(NfcController.ShowAllData, '/nfc', endpoint=f'{laa}.nfc')
-    admin_api.add_resource(NfcController.AddNFCData, '/nfc/store', endpoint=f'{laa}.nfc.store')
-    admin_api.add_resource(NfcController.UpdateNFCData, '/nfc/update/<string:id>', endpoint=f'{laa}.nfc.update')
-    admin_api.add_resource(NfcController.DeleteNFCData, '/nfc/delete/<string:id>', endpoint=f'{laa}.nfc.delete')
+    admin_api.add_resource(Logout, '/logout', endpoint=f'{laa}.logout')
+    admin_api.add_resource(NfcController, '/nfc', endpoint=f'{laa}.nfc')
+
+    # Unity
+    unity_api = Api(app, prefix="/api/unity")
+    unity_api.add_resource(NfcScanController, "/nfc/check", endpoint=f'{lk}.scan')
+    unity_api.add_resource(NfcLogoutController, "/nfc/logout", endpoint=f'{lk}.logout')

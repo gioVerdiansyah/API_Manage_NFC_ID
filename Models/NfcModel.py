@@ -26,6 +26,7 @@ class NfcModel(ModelMain):
 
     def update_nfc(self, id, data):
         collection = self.collection
+        del data['id']
 
         if 'isUsed' not in data:
             data['isUsed'] = False
@@ -47,3 +48,22 @@ class NfcModel(ModelMain):
 
         collection.find_one_and_delete({"_id": id})
         return {"success": True, "message": "Successfully delete NFC data"}
+
+    # Unity
+    def check_nfc_id(self, id):
+        collection = self.collection
+
+        if not collection.find_one({"nfc_id": id}):
+            return {"success": False, "message": "NFC ID is not found!"}
+
+        collection.find_one_and_update({"nfc_id": id}, {"$set": {'isUsed': True}})
+        return {"success": True, "message": "Successfully scan NFC"}
+
+    def nfc_logout(self, id):
+        collection = self.collection
+
+        if not collection.find_one({"nfc_id": id}):
+            return {"success": False, "message": "NFC ID is not found!"}
+
+        collection.find_one_and_update({"nfc_id": id}, {"$set": {'isUsed': False}})
+        return {"success": True, "message": "Successfully NCF logout"}

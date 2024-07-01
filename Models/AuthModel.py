@@ -36,6 +36,7 @@ class AuthModel(ModelMain):
         collection = self.collection
 
         jwt_token = check_token_valid(token)
+        print(jwt_token)
         if not jwt_token['success']:
             return {"success": False, "message": jwt_token['message']}
 
