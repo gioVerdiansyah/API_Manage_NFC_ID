@@ -1,13 +1,17 @@
 {
   "$jsonSchema":{
     "bsonType": "object",
-    "required": ["name"],
+    "required": ["machine_name"],
     "properties":{
       "id": {
         "bsonType": "string",
+        "description": "Column ID"
+      },
+      "nfc_id": {
+        "bsonType": "string",
         "description": "NFC ID Machine"
       },
-      "name": {
+      "machine_name": {
         "bsonType": "string",
         "description": "Name 3D machine"
       },

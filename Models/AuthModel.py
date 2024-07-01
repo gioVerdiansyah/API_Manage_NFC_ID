@@ -6,9 +6,9 @@ class AuthModel(ModelMain):
     def __init__(self):
         super().__init__()
         self.collection = self.mongo_client[self.main_db_name][self.col_1_name]
+        self.__setup__()
 
     def login_record(self):
-        self.__setup__()
 
         collection = self.collection
         collection.insert_one({
