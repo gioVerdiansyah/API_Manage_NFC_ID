@@ -1,4 +1,5 @@
 from Models.main import ModelMain
+from Helpers.HandlePaginationHelper import get_paginated_data
 
 
 class NfcModel(ModelMain):
@@ -7,6 +8,10 @@ class NfcModel(ModelMain):
         self.collection = self.mongo_client[self.main_db_name][self.col_2_name]
         self.__setup__()
 
+    def get_all_data(self, page):
+        collection = self.collection
+        data = get_paginated_data(collection=collection, page=page)
+        return data
     def add_nfc(self, data):
         collection = self.collection
 

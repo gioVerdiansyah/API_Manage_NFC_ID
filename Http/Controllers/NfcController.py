@@ -6,6 +6,15 @@ from Models.NfcModel import NfcModel
 from bson.objectid import ObjectId
 
 
+class ShowAllData(Resource):
+    def __init__(self):
+        self.model = NfcModel()
+
+    def get(self):
+        page = request.args.get('page', default=1, type=int)
+        data = self.model.get_all_data(page=page)
+        return response(data=data)
+
 class AddNFCData(Resource):
     def __init__(self):
         self.model = NfcModel()
