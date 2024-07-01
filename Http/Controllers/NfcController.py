@@ -15,6 +15,7 @@ class ShowAllData(Resource):
         data = self.model.get_all_data(page=page)
         return response(data=data)
 
+
 class AddNFCData(Resource):
     def __init__(self):
         self.model = NfcModel()
@@ -32,7 +33,7 @@ class AddNFCData(Resource):
             if model['success']:
                 return response(message=model['message'])
             else:
-                return response(message=model['message'], data="Try check your data again", isSuccess=False,
+                return response(message=model['message'], isSuccess=False,
                                 statusCode=403)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
@@ -56,7 +57,7 @@ class UpdateNFCData(Resource):
             if model['success']:
                 return response(message=model['message'])
             else:
-                return response(message=model['message'], data="Try check your data again", isSuccess=False,
+                return response(message=model['message'], isSuccess=False,
                                 statusCode=403)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
@@ -73,7 +74,7 @@ class DeleteNFCData(Resource):
             if model['success']:
                 return response(message=model['message'])
             else:
-                return response(message=model['message'], data="Try check your data again", isSuccess=False,
+                return response(message=model['message'], isSuccess=False,
                                 statusCode=403)
 
         except Exception as e:

@@ -5,6 +5,7 @@ from flask import request
 from Http.Requests.LoginRequest import LoginRequest
 from Helpers.HandleResponseHelper import response
 from Models.AuthModel import AuthModel
+from bson.objectid import ObjectId
 
 
 class Login(Resource):
@@ -20,10 +21,24 @@ class Login(Resource):
             if (json_data['email'] == os.getenv("ADMIN_EMAIL")) and (
                     json_data['password'] == os.getenv("ADMIN_PASSWORD")):
                 rec = AuthModel()
-                rec.login_record()
-                return response(message="Successfully Login!")
+                data_rec = rec.login_record()
+                return response(message=data_rec['message'], data=data_rec['data'])
 
             return response(message="Email or password is incorrect", data="Email or password is incorrect",
                             isSuccess=False, statusCode=403)
+        except Exception as e:
+            return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
+
+class Logout(Resource):
+    def post(self):
+        try:
+            token = request.headers.get("Authorization").split("Bearer ")[1]
+            rec = AuthModel()
+            data_rec = rec.logout_delete(token=token)
+            if data_rec['success']:
+                return response(message=data_rec['message'])
+            else:
+                return response(message=data_rec['message'], isSuccess=False,
+                                statusCode=403)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

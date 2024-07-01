@@ -4,7 +4,7 @@ from flask_restful import Api
 from Helpers.HandleResponseHelper import response
 
 app = Flask(__name__)
-api = Api(app)
+api = Api(app, prefix='/api')
 
 
 @app.errorhandler(404)

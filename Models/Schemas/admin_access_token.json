@@ -6,9 +6,9 @@
         "bsonType": "string",
         "description": "This date latest user login"
       },
-      "logout_date": {
+      "token": {
         "bsonType": "string",
-        "description": "This date latest user logout"
+        "description": "This token for access al features admin"
       }
     }
   }
