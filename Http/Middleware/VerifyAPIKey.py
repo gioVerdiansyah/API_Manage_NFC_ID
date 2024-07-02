@@ -7,6 +7,8 @@ from Helpers.HandleResponseHelper import response
 def require_api_key(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        if request.method == 'OPTIONS':
+            return
         try:
             api_key = request.headers.get('x-api-key')
             if not api_key:

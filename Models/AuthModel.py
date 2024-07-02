@@ -28,7 +28,6 @@ class AuthModel(ModelMain):
             return {"success": False, "message": jwt_process['message']}
 
         data = jwt_process['data']
-        print(data)
         collection.delete_one({"_id": data['_id']})
         return {"success": True, "message": "Successfully logout"}
 
@@ -36,7 +35,6 @@ class AuthModel(ModelMain):
         collection = self.collection
 
         jwt_token = check_token_valid(token)
-        print(jwt_token)
         if not jwt_token['success']:
             return {"success": False, "message": jwt_token['message']}
 

@@ -1,3 +1,5 @@
+import os
+
 from flask_restful import Resource
 from flask import request
 from Http.Requests.LoginRequest import LoginRequest

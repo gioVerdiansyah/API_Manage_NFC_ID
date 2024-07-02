@@ -15,4 +15,4 @@ model_setup.__setup__()
 if __name__ == "__main__":
     host = os.getenv("APP_HOST")
     port = os.getenv("APP_PORT")
-    app.run(debug=True, host=host, port=port)
+    app.run(debug=True,host=host, port=port)

@@ -8,6 +8,8 @@ from Models.AuthModel import AuthModel
 def require_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        if request.method == 'OPTIONS':
+            return
         try:
             token = request.headers.get('Authorization')
             if not token or not token.startswith('Bearer '):
