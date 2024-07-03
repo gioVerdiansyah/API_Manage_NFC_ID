@@ -1,4 +1,3 @@
-import os
 from functools import wraps
 from flask import request
 from Helpers.HandleResponseHelper import response
@@ -13,7 +12,7 @@ def require_token(func):
         try:
             token = request.headers.get('Authorization')
             if not token or not token.startswith('Bearer '):
-                return response(message='Missing token', isSuccess=False, statusCode=401)
+                return response(message='Missing token', isSuccess=False, statusCode=403)
             auth_model = AuthModel()
             check_token = auth_model.check_token(token=token.split('Bearer ')[1])
 
