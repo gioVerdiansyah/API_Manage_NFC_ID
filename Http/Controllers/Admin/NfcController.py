@@ -48,7 +48,7 @@ class NfcController(Resource):
 
             model = self.model.update_nfc(id=ObjectId(id), data=json_data)
 
-            return response(message=model['message'],isSuccess=model['success'], statusCode=model['code'])
+            return response(message=model['message'], isSuccess=model['success'], statusCode=model['code'])
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
 
@@ -62,7 +62,21 @@ class NfcController(Resource):
             id = json_data['id']
             model = self.model.delete_nfc(id=ObjectId(id))
 
-            return response(message=model['message'],isSuccess=model['success'], statusCode=model['code'])
+            return response(message=model['message'], isSuccess=model['success'], statusCode=model['code'])
 
+        except Exception as e:
+            return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
+
+
+class NfcSearchController(Resource):
+    def __init__(self):
+        self.model = NfcModel()
+
+    def get(self, query):
+        try:
+            page = request.args.get('page', default=1, type=int)
+            data = self.model.search_data(query=query, page=page)
+
+            return response(data=data)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

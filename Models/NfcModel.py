@@ -10,8 +10,14 @@ class NfcModel(ModelMain):
 
     def get_all_data(self, page):
         collection = self.collection
-        data = get_paginated_data(collection=collection, page=page)
+        data = get_paginated_data(cursor=collection.find(), page=page)
         return data
+
+    def search_data(self, query, page):
+        collection = self.collection
+        data = collection.find({"$or": [{"machine": {"$regex": f".*{query}.*"}}, {"nfc_id": {"$regex": f".*{query}.*"}}]})
+        return get_paginated_data(cursor=data, page=page)
+
     def add_nfc(self, data):
         collection = self.collection
 

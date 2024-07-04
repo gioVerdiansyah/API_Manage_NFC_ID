@@ -2,7 +2,7 @@ from Core.FlaskAPI import app, Api
 
 from Http.Controllers.Admin.Auth.LoginController import Login
 from Http.Controllers.Admin.Auth.LogoutController import Logout
-from Http.Controllers.Admin.NfcController import NfcController
+from Http.Controllers.Admin.NfcController import NfcController, NfcSearchController
 from Http.Controllers.Unity.NfcScanController import NfcScanController
 from Http.Controllers.Unity.NfcLogoutController import NfcLogoutController
 from Http.Controllers.TestController import TestController
@@ -20,6 +20,7 @@ def __init_api__():
     # Admin Auth
     admin_api.add_resource(Logout, '/logout', endpoint=f'{laa}.logout')
     admin_api.add_resource(NfcController, '/nfc', endpoint=f'{laa}.nfc')
+    admin_api.add_resource(NfcSearchController, '/nfc/search/<string:query>', endpoint=f'{laa}.nfc.search')
 
     # Unity
     unity_api = Api(app, prefix="/api/unity")
