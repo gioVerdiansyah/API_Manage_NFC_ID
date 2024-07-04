@@ -18,6 +18,6 @@ class NfcLogoutController(Resource):
             nfc_model = NfcModel()
             nfc_logout = nfc_model.nfc_logout(json_data['id'])
 
-            return response(nfc_logout['message'])
+            return response(nfc_logout['message'], isSuccess=nfc_logout['success'], statusCode=nfc_logout['code'])
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

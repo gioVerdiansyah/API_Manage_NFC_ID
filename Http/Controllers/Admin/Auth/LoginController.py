@@ -21,9 +21,9 @@ class Login(Resource):
                     json_data['password'] == os.getenv("ADMIN_PASSWORD")):
                 rec = AuthModel()
                 data_rec = rec.login_record()
-                return response(message=data_rec['message'], data=data_rec['data'])
+                return response(message=data_rec['message'], data=data_rec['data'], isSuccess=data_rec['success'], statusCode=data_rec['code'])
 
             return response(message="Email or password is incorrect", data="Email or password is incorrect",
-                            isSuccess=False, statusCode=403)
+                            isSuccess=False, statusCode=401)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

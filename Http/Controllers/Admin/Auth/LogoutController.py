@@ -11,10 +11,7 @@ class Logout(Resource):
             token = request.headers.get("Authorization").split("Bearer ")[1]
             rec = AuthModel()
             data_rec = rec.logout_delete(token=token)
-            if data_rec['success']:
-                return response(message=data_rec['message'])
-            else:
-                return response(message=data_rec['message'], isSuccess=False,
-                                statusCode=403)
+
+            return response(message=data_rec['message'], isSuccess=data_rec['success'], statusCode=data_rec['code'])
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

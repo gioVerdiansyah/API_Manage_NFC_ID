@@ -19,10 +19,10 @@ class NfcModel(ModelMain):
             data['isUsed'] = False
 
         if collection.find_one({"nfc_id": data['nfc_id']}):
-            return {"success": False, "message": "NFC ID is already taken"}
+            return {"success": False, "message": "NFC ID is already taken", "code": 409}
 
         collection.insert_one(data)
-        return {"success": True, "message": "Successfully insert new NFC data"}
+        return {"success": True, "message": "Successfully insert new NFC data", "code": 200}
 
     def update_nfc(self, id, data):
         collection = self.collection
@@ -32,38 +32,43 @@ class NfcModel(ModelMain):
             data['isUsed'] = False
 
         if not collection.find_one({"_id": id}):
-            return {"success": False, "message": "ID is not found!"}
+            return {"success": False, "message": "ID is not found!", "code": 404}
 
         if collection.find_one({"nfc_id": data['nfc_id'], "_id": {"$ne": id}}):
-            return {"success": False, "message": "NFC ID is already taken"}
+            return {"success": False, "message": "NFC ID is already taken", "code": 409}
 
         collection.find_one_and_update({"_id": id}, {"$set": data})
-        return {"success": True, "message": "Successfully update NFC data"}
+        return {"success": True, "message": "Successfully update NFC data", "code": 200}
 
     def delete_nfc(self, id):
         collection = self.collection
 
         if not collection.find_one({"_id": id}):
-            return {"success": False, "message": "ID is not found!"}
+            return {"success": False, "message": "ID is not found!", "code": 404}
 
         collection.find_one_and_delete({"_id": id})
-        return {"success": True, "message": "Successfully delete NFC data"}
+        return {"success": True, "message": "Successfully delete NFC data", "code": 200}
 
     # Unity
     def check_nfc_id(self, id):
         collection = self.collection
 
-        if not collection.find_one({"nfc_id": id}):
-            return {"success": False, "message": "NFC ID is not found!"}
+        data = collection.find_one({"nfc_id": id})
+
+        if not data:
+            return {"success": False, "message": "NFC ID is not found!", "code": 404}
+
+        if data['isUsed']:
+            return {"success": False, "message": "NFC ID is being used", "code": 409}
 
         collection.find_one_and_update({"nfc_id": id}, {"$set": {'isUsed': True}})
-        return {"success": True, "message": "Successfully scan NFC"}
+        return {"success": True, "message": "Successfully scan NFC", "code": 200}
 
     def nfc_logout(self, id):
         collection = self.collection
 
         if not collection.find_one({"nfc_id": id}):
-            return {"success": False, "message": "NFC ID is not found!"}
+            return {"success": False, "message": "NFC ID is not found!", "code": 404}
 
         collection.find_one_and_update({"nfc_id": id}, {"$set": {'isUsed': False}})
-        return {"success": True, "message": "Successfully NCF logout"}
+        return {"success": True, "message": "Successfully NCF logout", "code": 200}

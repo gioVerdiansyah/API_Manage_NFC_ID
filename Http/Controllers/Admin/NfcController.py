@@ -31,7 +31,7 @@ class NfcController(Resource):
                 return response(message=model['message'])
             else:
                 return response(message=model['message'], isSuccess=False,
-                                statusCode=403)
+                                statusCode=422)
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
 
@@ -48,11 +48,7 @@ class NfcController(Resource):
 
             model = self.model.update_nfc(id=ObjectId(id), data=json_data)
 
-            if model['success']:
-                return response(message=model['message'])
-            else:
-                return response(message=model['message'], isSuccess=False,
-                                statusCode=403)
+            return response(message=model['message'],isSuccess=model['success'], statusCode=model['code'])
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)
 
@@ -66,11 +62,7 @@ class NfcController(Resource):
             id = json_data['id']
             model = self.model.delete_nfc(id=ObjectId(id))
 
-            if model['success']:
-                return response(message=model['message'])
-            else:
-                return response(message=model['message'], isSuccess=False,
-                                statusCode=403)
+            return response(message=model['message'],isSuccess=model['success'], statusCode=model['code'])
 
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

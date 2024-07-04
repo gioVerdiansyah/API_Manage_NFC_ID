@@ -18,6 +18,6 @@ class NfcScanController(Resource):
             nfc_model = NfcModel()
             result = nfc_model.check_nfc_id(json_data['id'])
 
-            return response(result['message'])
+            return response(result['message'], isSuccess=result['success'], statusCode=result['code'])
         except Exception as e:
             return response(message="There is a server error!", data=str(e), isSuccess=False, statusCode=500)

@@ -19,17 +19,17 @@ class AuthModel(ModelMain):
         }
         collection.insert_one(data)
 
-        return {"success": True, "message": "Successfully login!", "data": str(data['token'])}
+        return {"success": True, "message": "Successfully login!", "data": str(data['token']), "code": 200}
 
     def logout_delete(self, token):
         collection = self.collection
         jwt_process = self.check_token(token)
         if not jwt_process['success']:
-            return {"success": False, "message": jwt_process['message']}
+            return {"success": False, "message": jwt_process['message'], "code": 422}
 
         data = jwt_process['data']
         collection.delete_one({"_id": data['_id']})
-        return {"success": True, "message": "Successfully logout"}
+        return {"success": True, "message": "Successfully logout", "code": 200}
 
     def check_token(self, token):
         collection = self.collection
