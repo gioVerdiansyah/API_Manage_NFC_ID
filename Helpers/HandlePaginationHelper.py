@@ -35,12 +35,15 @@ def get_paginated_data(collection, page, per_page=1):
     # Prepare response dictionary
     response = {
         "data": documents,
-        "current_page": page,
-        "per_page": per_page,
-        "total": total_count,
-        "last_page": total_pages,
-        "next_page": next_page,
-        "prev_page": prev_page
+        "pagination": {
+            "total_per_data": len(documents),
+            "current_page": page,
+            "per_page": per_page,
+            "total": total_count,
+            "last_page": total_pages,
+            "next_page": next_page,
+            "prev_page": prev_page
+        }
     }
 
     return response
