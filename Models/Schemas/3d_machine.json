@@ -3,10 +3,6 @@
     "bsonType": "object",
     "required": ["machine_name"],
     "properties":{
-      "id": {
-        "bsonType": "string",
-        "description": "Column ID"
-      },
       "nfc_id": {
         "bsonType": "string",
         "description": "NFC ID Machine"
@@ -18,6 +14,14 @@
       "isUsed": {
         "bsonType": "bool",
         "description": "Is the machine used another device?"
+      },
+      "latest_used": {
+        "bsonType": ["date", "null"],
+        "description": "Latest machine used"
+      },
+      "total_used": {
+        "bsonType": "int",
+        "description": "Total machine used"
       }
     }
   }
