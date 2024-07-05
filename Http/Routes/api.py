@@ -18,8 +18,8 @@ def __init_api__():
     admin_api = Api(app, prefix="/api/admin")
     admin_api.add_resource(TestController, '/test')
     admin_api.add_resource(Login, '/login', endpoint=f'{lk}.login')
-    admin_api.add_resource(DashboardController, '/dashboard', endpoint=f"{laa}.dashboard")
     # Admin Auth
+    admin_api.add_resource(DashboardController, '/dashboard', endpoint=f"{laa}.dashboard")
     admin_api.add_resource(Logout, '/logout', endpoint=f'{laa}.logout')
     admin_api.add_resource(NfcController, '/nfc', endpoint=f'{laa}.nfc')
     admin_api.add_resource(NfcSearchController, '/nfc/search/<string:query>', endpoint=f'{laa}.nfc.search')
