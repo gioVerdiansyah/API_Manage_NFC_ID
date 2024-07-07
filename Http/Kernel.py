@@ -2,7 +2,6 @@ from flask import Blueprint
 from Http.Middleware.VerifyAPIKey import require_api_key
 from Http.Middleware.AdminAuth import require_token
 from Core.FlaskAPI import app
-from flask_cors import CORS
 
 need_key_blueprint = Blueprint("lock", __name__)
 verify_token = Blueprint("lock_admin_auth", __name__)
