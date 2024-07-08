@@ -22,9 +22,9 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@v4.3.1
       with:
         # ftp server
-        server: nfc.kaitodecode.com
+        server: api-nfc.kaitodecode.com
         # ftp username
-        username: hosting@nfc.kaitodecode.com
+        username: app@api-nfc.kaitodecode.com
         # ftp password
         password: sadjnjadksnhukquwbsadjahbaklkdbjhsd
         # Server port to connect to (read your web hosts docs)
