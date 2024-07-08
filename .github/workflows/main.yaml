@@ -24,7 +24,7 @@ jobs:
         # ftp server
         server: nfc.kaitodecode.com
         # ftp username
-        username: api@nfc.kaitodecode.com
+        username: hosting@nfc.kaitodecode.com
         # ftp password
         password: sadjnjadksnhukquwbsadjahbaklkdbjhsd
         # Server port to connect to (read your web hosts docs)
