@@ -3,14 +3,44 @@
     "bsonType": "object",
     "required": ["machine_name"],
     "properties":{
-      "nfc_id": {
+      "scene_id": {
         "bsonType": "string",
-        "description": "NFC ID Machine"
+        "description": "Scene ID Machine"
       },
       "machine_name": {
         "bsonType": "string",
         "description": "Name 3D machine"
       },
+      "was_purchased": {
+        "bsonType": "array",
+        "description": "List of units has been bought",
+        "items": {
+            "bsonType": ["object", "null"],
+            "required": ["id", "isUsed", "last_used", "buy_at"],
+            "properties": {
+                "id": {
+                    "bsonType": "string",
+                    "description": "ID of the unit"
+                },
+                "isUsed": {
+                    "bsonType": "bool",
+                    "description": "Indicates if the unit is used"
+                },
+                "last_used": {
+                    "bsonType": ["date", "null"],
+                    "description": "Last used date of the unit"
+                },
+                "buy_at": {
+                    "bsonType": "date",
+                    "description": "Purchase date of the unit"
+                },
+                "total_used": {
+                  "bsonType": "int",
+                  "description": "Total machine used"
+                }
+            }
+        }
+    },
       "isUsed": {
         "bsonType": "bool",
         "description": "Is the machine used another device?"

@@ -10,6 +10,18 @@ class DashboardModel(ModelMain):
     def get_data_dashboard(self):
         collection = self.collection
 
+        struct = {
+            "total_machine": 0,
+            "total_machine_used": 0,
+            "last_machine_used": {
+                "name": "-",
+                "date": "-"
+            }
+        }
+
+        if collection.count_documents({}) < 1:
+            return {"success": True, "data": struct, "code": 200}
+
         sum_pipeline = [
             {
                 "$group": {
@@ -39,10 +51,7 @@ class DashboardModel(ModelMain):
             last_machine_used_struct['name'] = last_machine_used[0].get('machine_name', '-')
             last_machine_used_struct['date'] = last_machine_used[0].get('latest_used', '-')
 
-        struct = {
-            "total_machine": machine_total,
-            "total_machine_used": total_machine_used[0]['totalSum'],
-            "last_machine_used": last_machine_used_struct
-        }
-
+        struct['total_machine'] = machine_total
+        struct['total_machine_used'] = total_machine_used[0]['totalSum']
+        struct['last_machine_used'] = last_machine_used_struct
         return {"success": True, "data": struct, "code": 200}

@@ -14,6 +14,8 @@ def require_api_key(func):
             if not api_key:
                 return response(message='Missing or invalid API key', isSuccess=False, statusCode=403)
 
+            print(api_key)
+            print(os.getenv("APP_API_KEY"))
             if api_key != os.getenv("APP_API_KEY"):
                 return response(message='Invalid API key!', isSuccess=False, statusCode=403)
 
