@@ -93,10 +93,47 @@ class SceneAndUnitModel(ModelMain):
 
     # User Purchased
 
-    def get_all_data_units(self, page):
-        collection = self.collection
-        data = get_paginated_data(cursor=collection.find({"was_purchased": {"$exists": True}}), page=page)
-        return data
+    def get_all_data_units(self, page=1):
+        per_page = 10
+        skip = (page - 1) * per_page
+
+        cursor = self.collection.find({"was_purchased": {"$exists": True}}).skip(skip).limit(per_page)
+        machines = self.collection.find({}, {"machine_name": 1, "scene_id": 1, "_id": 0})
+        machine_state = list(machines)
+        data = list(cursor)
+
+        transformed_data = []
+        for item in data:
+            for purchase in item.get('was_purchased', []):
+                transformed_item = {
+                    "machine_name": item["machine_name"],
+                    "scene_id": item["scene_id"],
+                    "id": purchase["id"],
+                }
+                transformed_data.append(transformed_item)
+
+        pagination = {
+            "current_page": page,
+            "last_page": 1,
+            "next_page": None,
+            "per_page": per_page,
+            "prev_page": None,
+            "total": len(transformed_data),
+            "total_per_data": len(data)
+        }
+
+        response = {
+            "data": transformed_data,
+            "machine_state": machine_state,
+            "pagination": pagination,
+            "meta": {
+                "isSuccess": True,
+                "message": "Successfully get",
+                "statusCode": 200
+            }
+        }
+
+        return response
 
     def add_user_purchased(self, data):
         collection = self.collection
