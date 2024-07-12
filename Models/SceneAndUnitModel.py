@@ -1,7 +1,8 @@
 import datetime
 
 from Models.main import ModelMain
-from Helpers.HandlePaginationHelper import get_paginated_data, get_paginated_data_user_purchased, get_paginate_data_with_search
+from Helpers.HandlePaginationHelper import get_paginated_data, get_paginated_data_user_purchased, \
+    get_paginate_data_with_search
 
 
 class SceneAndUnitModel(ModelMain):
@@ -56,40 +57,82 @@ class SceneAndUnitModel(ModelMain):
         collection.find_one_and_delete({"_id": id})
         return {"success": True, "message": "Successfully delete Scene data", "code": 200}
 
-    # Unity
-    def check_scene_id(self, id):
+    # For Unity
+    def check_scene_id(self, data):
         collection = self.collection
+        scene_id = data['scene_id']
+        unit_id = data['unit_id']
 
-        data = collection.find_one({"scene_id": id})
+        result = collection.find_one(
+            {"scene_id": scene_id, "was_purchased.id": unit_id},
+            {"was_purchased.$": 1, "machine_name": 1, "scene_id": 1}
+        )
 
-        if not data:
-            return {"success": False, "message": "Scene ID is not found!", "code": 404}
+        if not result:
+            return {"success": False, "message": "Scene ID or Unit ID not found!", "code": 404}
 
-        if data['isUsed']:
-            return {"success": False, "message": "Scene ID is being used", "code": 409}
+        purchase_data = result['was_purchased'][0]
 
-        struct = {
-            'isUsed': True,
-            'latest_used': datetime.datetime.now(),
-            'total_used': data['total_used'] + 1
+        if purchase_data['isUsed']:
+            return {"success": False, "message": "Unit ID is already used!", "code": 409}
+
+        updated_data = {
+            "isUsed": True,
+            "total_used": purchase_data['total_used'] + 1
         }
 
-        collection.find_one_and_update({"scene_id": id}, {"$set": struct})
-        return {"success": True, "message": "Successfully scan scene", "code": 200}
+        collection.update_one(
+            {"scene_id": scene_id, "was_purchased.id": unit_id},
+            {"$set": {"was_purchased.$.isUsed": updated_data["isUsed"],
+                      "was_purchased.$.total_used": updated_data["total_used"]}}
+        )
 
-    def scene_logout(self, id):
+        purchase_data.update(updated_data)
+
+        return {
+            "success": True,
+            "message": "Successfully login unit!",
+            "code": 200,
+            "data": purchase_data
+        }
+
+    def scene_logout(self, data):
         collection = self.collection
+        scene_id = data['scene_id']
+        unit_id = data['unit_id']
 
-        scene_data = collection.find_one({"scene_id": id})
+        result = collection.find_one(
+            {"scene_id": scene_id, "was_purchased.id": unit_id},
+            {"was_purchased.$": 1, "machine_name": 1, "scene_id": 1}
+        )
 
-        if not scene_data:
-            return {"success": False, "message": "Scene ID is not found!", "code": 404}
+        if not result:
+            return {"success": False, "message": "Scene ID or Unit ID not found!", "code": 404}
 
-        if not scene_data['isUsed']:
-            return {"success": False, "message": "Scene has not logged in", "code": 409}
+        purchase_data = result['was_purchased'][0]
 
-        collection.find_one_and_update({"scene_id": id}, {"$set": {'isUsed': False}})
-        return {"success": True, "message": "Successfully Scene logout", "code": 200}
+        if not purchase_data['isUsed']:
+            return {"success": False, "message": "Unit ID has not logged in!", "code": 409}
+
+        updated_data = {
+            "isUsed": False,
+            "last_used": datetime.datetime.now()
+        }
+
+        collection.update_one(
+            {"scene_id": scene_id, "was_purchased.id": unit_id},
+            {"$set": {"was_purchased.$.isUsed": updated_data["isUsed"],
+                      "was_purchased.$.last_used": updated_data["last_used"]}}
+        )
+
+        purchase_data.update(updated_data)
+
+        return {
+            "success": True,
+            "message": "Successfully logout unit!",
+            "code": 200,
+            "data": purchase_data
+        }
 
     # User Purchased
 
@@ -138,7 +181,7 @@ class SceneAndUnitModel(ModelMain):
             {"$push": {"was_purchased": payload}}
         )
 
-        return {"success": True, "message": "Successfully add user purchased", "code": 200}
+        return {"success": True, "message": "Successfully add unit purchased", "code": 200}
 
     def update_user_purchased(self, data):
         collection = self.collection
@@ -200,7 +243,7 @@ class SceneAndUnitModel(ModelMain):
                 {"$set": {f"was_purchased.{index_to_update}.id": updated_unit_id}}
             )
 
-        return {"success": True, "message": "Successfully update user purchased", "code": 200}
+        return {"success": True, "message": "Successfully update unit purchased", "code": 200}
 
     def delete_user_purchased(self, data):
         collection = self.collection
@@ -227,4 +270,4 @@ class SceneAndUnitModel(ModelMain):
             {"$pull": {"was_purchased": {"id": unit_id}}}
         )
 
-        return {"success": True, "message": "Successfully delete user purchased", "code": 200}
+        return {"success": True, "message": "Successfully delete unit purchased", "code": 200}
