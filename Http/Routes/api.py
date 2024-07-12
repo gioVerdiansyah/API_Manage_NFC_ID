@@ -3,7 +3,7 @@ from Core.FlaskAPI import app, Api
 from Http.Controllers.Admin.Auth.LoginController import Login
 from Http.Controllers.Admin.Auth.LogoutController import Logout
 from Http.Controllers.Admin.SceneController import SceneController, SceneSearchController
-from Http.Controllers.Admin.UnitsPurchasedController import UnitsPurchasedController
+from Http.Controllers.Admin.UnitsPurchasedController import UnitsPurchasedController, UnitSearchController
 from Http.Controllers.Admin.DashboardController import DashboardController
 from Http.Controllers.Unity.SceneScanController import SceneScanController
 from Http.Controllers.Unity.SceneLogoutController import SceneLogoutController
@@ -25,6 +25,7 @@ def __init_api__():
     admin_api.add_resource(Logout, '/logout', endpoint=f'{laa}.logout')
     admin_api.add_resource(SceneController, '/scene', endpoint=f'{laa}.scene')
     admin_api.add_resource(UnitsPurchasedController, '/units', endpoint=f'{laa}.unit')
+    admin_api.add_resource(UnitSearchController, '/units/search/<string:query>', endpoint=f'{laa}.unit.search')
     admin_api.add_resource(SceneSearchController, '/scene/search/<string:query>', endpoint=f'{laa}.scene.search')
 
     # Unity

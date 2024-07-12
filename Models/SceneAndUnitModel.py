@@ -1,7 +1,7 @@
 import datetime
 
 from Models.main import ModelMain
-from Helpers.HandlePaginationHelper import get_paginated_data
+from Helpers.HandlePaginationHelper import get_paginated_data, get_paginated_data_user_purchased, get_paginate_data_with_search
 
 
 class SceneAndUnitModel(ModelMain):
@@ -19,7 +19,7 @@ class SceneAndUnitModel(ModelMain):
         collection = self.collection
         data = collection.find(
             {"$or": [{"machine": {"$regex": f".*{query}.*"}}, {"scene_id": {"$regex": f".*{query}.*"}}]})
-        return get_paginated_data(cursor=data, page=page)
+        return get_paginated_data(cursor=data, page=page, per_page=10)
 
     def add_scene(self, data):
         collection = self.collection
@@ -94,46 +94,18 @@ class SceneAndUnitModel(ModelMain):
     # User Purchased
 
     def get_all_data_units(self, page=1):
-        per_page = 10
-        skip = (page - 1) * per_page
+        query = self.collection.find({"was_purchased": {"$exists": True}},
+                                     {"machine_name": 1, "scene_id": 1, "was_purchased": 1})
 
-        cursor = self.collection.find({"was_purchased": {"$exists": True}}).skip(skip).limit(per_page)
-        machines = self.collection.find({}, {"machine_name": 1, "scene_id": 1, "_id": 0})
-        machine_state = list(machines)
-        data = list(cursor)
+        filtered_data = get_paginated_data_user_purchased(query, per_page=10, page=page)
+        return filtered_data
 
-        transformed_data = []
-        for item in data:
-            for purchase in item.get('was_purchased', []):
-                transformed_item = {
-                    "machine_name": item["machine_name"],
-                    "scene_id": item["scene_id"],
-                    "id": purchase["id"],
-                }
-                transformed_data.append(transformed_item)
+    def search_data_units(self, page=1, search_id=None):
+        query = self.collection.find({"was_purchased": {"$exists": True}},
+                                     {"machine_name": 1, "scene_id": 1, "was_purchased": 1})
 
-        pagination = {
-            "current_page": page,
-            "last_page": 1,
-            "next_page": None,
-            "per_page": per_page,
-            "prev_page": None,
-            "total": len(transformed_data),
-            "total_per_data": len(data)
-        }
-
-        response = {
-            "data": transformed_data,
-            "machine_state": machine_state,
-            "pagination": pagination,
-            "meta": {
-                "isSuccess": True,
-                "message": "Successfully get",
-                "statusCode": 200
-            }
-        }
-
-        return response
+        filtered_data = get_paginate_data_with_search(query, per_page=10, page=page, search_keyword=search_id)
+        return filtered_data
 
     def add_user_purchased(self, data):
         collection = self.collection
@@ -170,16 +142,18 @@ class SceneAndUnitModel(ModelMain):
 
     def update_user_purchased(self, data):
         collection = self.collection
-        scene_id = data['scene_id']
+        scene_id_before = data['scene_id_before']
+        scene_id_after = data['scene_id_after']
         unit_id = data['unit_id']
+        updated_unit_id = data['updated_unit_id']
 
-        scene_data = collection.find_one({"scene_id": scene_id})
+        scene_data = collection.find_one({"scene_id": scene_id_before})
 
         if not scene_data:
             return {"success": False, "message": "Scene ID is not found!", "code": 404}
 
         hasExist = collection.find_one({
-            "scene_id": scene_id,
+            "scene_id": scene_id_before,
             "was_purchased": {
                 "$elemMatch": {"id": unit_id}
             }
@@ -191,11 +165,40 @@ class SceneAndUnitModel(ModelMain):
         index_to_update = next((i for i, item in enumerate(hasExist["was_purchased"]) if item["id"] == unit_id), None)
         if index_to_update is None:
             return {"success": False, "message": "Unit ID not found in was_purchased!", "code": 404}
-        print(index_to_update)
-        collection.update_one(
-            hasExist,
-            {"$set": {f"was_purchased.{index_to_update}.id": data['updated_unit_id']}}
-        )
+
+        if scene_id_after != scene_id_before:
+            payload_with_old_data = collection.aggregate([
+                {"$match": {"scene_id": scene_id_before}},
+                {"$project": {
+                    "was_purchased": {
+                        "$arrayElemAt": ["$was_purchased", index_to_update]
+                    }
+                }},
+                {"$addFields": {
+                    "was_purchased.id": updated_unit_id
+                }},
+                {"$replaceRoot": {
+                    "newRoot": "$was_purchased"
+                }}
+            ]).next()
+
+            if not payload_with_old_data:
+                return {"success": False, "message": "Scene ID or index not found!", "code": 404}
+
+            collection.update_one(
+                hasExist,
+                {"$pull": {"was_purchased": {"id": unit_id}}}
+            )
+
+            collection.update_one(
+                {"scene_id": scene_id_after},
+                {"$push": {"was_purchased": payload_with_old_data}}
+            )
+        else:
+            collection.update_one(
+                hasExist,
+                {"$set": {f"was_purchased.{index_to_update}.id": updated_unit_id}}
+            )
 
         return {"success": True, "message": "Successfully update user purchased", "code": 200}
 
