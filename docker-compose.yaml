@@ -15,7 +15,7 @@ services:
       ALGORITHM: HS256
       ADMIN_EMAIL: admin@utschool.sch.id
       ADMIN_PASSWORD: "admin-ini"
-      MONGO_URL: mongodb://mongodb:27017/nfc_db
+      MONGO_URL: mongodb://admin:2006@mongodb:27017/nfc_db
       MAIN_DB: nfc_db
     depends_on:
       - mongodb
