@@ -4,7 +4,7 @@ services:
     build: .
     container_name: "api_manage_nfc_ut"
     ports:
-      - 3004:4545
+      - "3004:4545"
     environment:
       APP_HOST: localhost
       APP_PORT: 4545
