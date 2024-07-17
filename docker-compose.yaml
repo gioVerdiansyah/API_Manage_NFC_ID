@@ -1,61 +1,24 @@
 version: "3.8"
-
 services:
   api:
     build: .
     container_name: "api_manage_nfc_ut"
     ports:
-      - "3004:4545"
+      - 3004:4545
     environment:
       APP_HOST: localhost
       APP_PORT: 4545
-      APP_FULL_URL: https://localhost:4545/api/
-      APP_API_KEY: f8097307abf289af18ce1af2dc75184a
+      APP_FULL_URL: http://localhost:4545/api/
+      APP_API_KEY: f8097307ab`f289af18ce1af2dc75184a
       SECRET_KEY: "1100011100011"
       ALGORITHM: HS256
-      ADMIN_EMAIL: admin@utschool.sch.id
+      ADMIN_EMAIL: "admin@utschool.sch.id"
       ADMIN_PASSWORD: "admin-ini"
-      MONGO_URL: mongodb://admin:2006@mongodb:27017/nfc_db
+      MONGO_URL: mongodb://mymongo@localhost:27017/
       MAIN_DB: nfc_db
-    depends_on:
-      - mongodb
     networks:
       - nfc-network
-
-  mongodb:
-    image: mongo:4.2
-    container_name: "mongo_db"
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: 2006
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodata:/data/db
-    networks:
-      - nfc-network
-
-  mongo-express:
-    image: mongo-express
-    container_name: "mongo_express"
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: 2006
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: 2006
-    ports:
-      - "8081:8081"
-    depends_on:
-      - mongodb
-    networks:
-      - nfc-network
-
-volumes:
-  mongodata:
 
 networks:
   nfc-network:
-    driver: bridge
+    external: true
