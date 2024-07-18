@@ -16,6 +16,9 @@ laa = "lock_admin_auth"
 
 # Routes
 def __init_api__():
+
+
+
     # Admin
     admin_api = Api(app, prefix="/api/admin", errors=errors)
     admin_api.add_resource(TestController, '/test')

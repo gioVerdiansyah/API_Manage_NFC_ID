@@ -4,10 +4,10 @@ services:
     build: .
     container_name: "api_manage_nfc_ut"
     ports:
-      - "3004:4545"
+      - "3004:8000"
     environment:
       APP_HOST: localhost
-      APP_PORT: 4545
+      APP_PORT: 8000
       APP_FULL_URL: https://localhost:4545/api/
       APP_API_KEY: f8097307abf289af18ce1af2dc75184a
       SECRET_KEY: "1100011100011"
