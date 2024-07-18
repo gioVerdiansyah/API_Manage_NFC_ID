@@ -22,6 +22,7 @@ def get_paginated_data(cursor, page=1, per_page=5):
     documents = []
     for doc in paginated_cursor:
         doc['_id'] = str(doc['_id'])
+        doc['was_purchased'] = len(doc['was_purchased'])
         documents.append(doc)
 
     # Get total count of documents in cursor (for pagination metadata)

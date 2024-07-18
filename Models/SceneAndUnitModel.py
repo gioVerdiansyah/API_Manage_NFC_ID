@@ -65,7 +65,7 @@ class SceneAndUnitModel(ModelMain):
 
         result = collection.find_one(
             {"scene_id": scene_id, "was_purchased.id": unit_id},
-            {"was_purchased.$": 1, "machine_name": 1, "scene_id": 1}
+            {"was_purchased.$": 1, "machine_name": 1, "scene_id": 1, 'total_used': 1}
         )
 
         if not result:
@@ -83,8 +83,11 @@ class SceneAndUnitModel(ModelMain):
 
         collection.update_one(
             {"scene_id": scene_id, "was_purchased.id": unit_id},
-            {"$set": {"was_purchased.$.isUsed": updated_data["isUsed"],
-                      "was_purchased.$.total_used": updated_data["total_used"]}}
+            {"$set": {
+                "was_purchased.$.isUsed": updated_data["isUsed"],
+                "was_purchased.$.total_used": updated_data["total_used"],
+                "total_used": result["total_used"] + 1
+            }}
         )
 
         purchase_data.update(updated_data)
