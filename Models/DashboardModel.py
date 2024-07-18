@@ -41,7 +41,7 @@ class DashboardModel(ModelMain):
             {"$sort": {"was_purchased.last_used": -1}},
             {"$limit": 1},
             {"$project": {
-                "machine_name": 1,
+                "machine_name": "$was_purchased.id",
                 "last_used": "$was_purchased.last_used"
             }}
         ]
